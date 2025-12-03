@@ -1,5 +1,20 @@
 <?php
 include "connection.php";
+$sqlAffichage = "SELECT * FROM animals, habitat where animals.habitat_id = habitat.id";
+
+if (!empty($_POST["filterHabitat"])) {
+    $habitat = $_POST["filterHabitat"];
+    $sqlAffichage .= " AND habitat_id = $habitat";
+}
+
+if (!empty($_POST["filterType"])) {
+    $type = $_POST["filterType"];
+    $sqlAffichage .= " AND type_alimentaire = '$type'";
+    echo $sqlAffichage;
+}
+
+$resultAffichage = mysqli_query($conn, $sqlAffichage);
+$dataAffichage = mysqli_fetch_all($resultAffichage, MYSQLI_ASSOC);
 
 $sqlCtrOm = "SELECT * FROM animals where type_alimentaire = 'Omnivore';";
 $resultCtrOm = mysqli_query($conn, $sqlCtrOm);
@@ -840,7 +855,30 @@ $dataCtrHerb = mysqli_fetch_all($resultCtrHerb, MYSQLI_ASSOC);
         </div>
 
 
-        
+        <div class='animals-grid'>
+            <?php
+            // print_r($data);
+            foreach ($dataAffichage as $value) {
+                echo "<div class='animal-card'>
+            <div class='animal-image'>
+                <img class='animal-image' src='" . $value["image"] . "' alt='" . $value["nom"] . "'>
+                <span class='animal-badge'></span>
+            </div>
+            <div class='animal-info'>
+                <div class='animal-name'>" . $value["nom"] . "</div>
+                <div class='animal-detail'><strong>Habitat:</strong> <span class='habitat-tag habitat-savane'>" . $value["nom_habitat"] . "</span></div>
+                <div class='animal-detail'><strong>Type:</strong> " . $value["type_alimentaire"] . "</div>
+                <div class='animal-actions'>
+                    <button class='btn-small btn-edit' onclick='modifier({$value['animal_id']})'>✏️ Modifier</button>
+                    <form action='delete.php' method='post'><button name='delete' class='btn-small btn-delete' value='{$value['animal_id']}'>🗑️ Supprimer</button></form>
+                </div>
+            </div>
+        </div>";
+            }
+            ?>
+
+
+        </div>
 
 
 
