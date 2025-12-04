@@ -30,8 +30,14 @@ $sqlCtrHerb = "SELECT * FROM  animals where type_alimentaire = 'Herbivore'";
 $resultCtrHerb = mysqli_query($conn, $sqlCtrHerb);
 $dataCtrHerb = mysqli_fetch_all($resultCtrHerb, MYSQLI_ASSOC);
 
+$sqltotal = "SELECT * FROM animals;";
+$resulttotal = mysqli_query($conn, $sqltotal);
+$total = mysqli_fetch_all($resulttotal, MYSQLI_ASSOC);
 
-
+$herbivore = (count($dataCtrHerb) / count($total)) * 100;
+echo $herbivore;
+$carnivore = (count($dataCtrCar) / count($total)) * 100;
+$omnivore = (count($dataCtrOm) / count($total)) * 100;
 
 ?>
 <!DOCTYPE html>
@@ -42,8 +48,27 @@ $dataCtrHerb = mysqli_fetch_all($resultCtrHerb, MYSQLI_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zoo Animals - Apprendre en S'amusant</title>
     <style>
-        .filter-button {
-            padding: 5px;
+        .valueHerb{
+            background-color: green;
+            height: 100%;
+            border-radius: 30px;
+        }
+        .valueOmn{
+            background-color: yellow;
+            height: 100%;
+            border-radius: 30px;
+        }
+        .valueCar{
+            background-color: red;
+            height: 100%;
+            border-radius: 30px;
+        }
+        .range {
+            height: 5px;
+            background-color: rgba(173, 173, 173, 1);
+            position: relative;
+            top: 15px;
+            border-radius: 30px;
         }
 
         * {
@@ -124,7 +149,7 @@ $dataCtrHerb = mysqli_fetch_all($resultCtrHerb, MYSQLI_ASSOC);
 
         .filter-group {
             display: flex;
-            gap: 20px;
+            gap: 10px;
             flex-wrap: wrap;
             align-items: center;
         }
@@ -802,13 +827,10 @@ $dataCtrHerb = mysqli_fetch_all($resultCtrHerb, MYSQLI_ASSOC);
 
     <div class="container">
         <header>
-            <div class="lang-switcher">
-                <button class="lang-btn active">🇫🇷 FR</button>
-                <button class="lang-btn">🇬🇧 EN</button>
-            </div>
             <h1>🦁 Zoo Animals 🐼</h1>
             <p class="subtitle">Apprendre et s'amuser avec les animaux du zoo!</p>
         </header>
+
         <div class="filters">
             <div class="filter-group">
                 <span class="filter-label">🔍 Filtrer par:</span>
@@ -837,20 +859,33 @@ $dataCtrHerb = mysqli_fetch_all($resultCtrHerb, MYSQLI_ASSOC);
 
         <div class="stats">
             <div class="stat-card">
-                <div class="stat-number"><?= count($dataAffichage) ?></div>
+                <div class="stat-number"><?= count($total) ?></div>
                 <div class="stat-label">🦁 Total Animaux</div>
+
             </div>
+
+
+            
             <div class="stat-card">
                 <div class="stat-number"><?= count($dataCtrOm) ?></div>
                 <div class="stat-label">🍽️ Omnivore</div>
+                <div class="range">
+                    <div style="width : <?= $omnivore.'%' ?>" class="valueOmn"></div>
+                </div>
             </div>
             <div class="stat-card">
                 <div class="stat-number"><?= count($dataCtrCar) ?></div>
                 <div class="stat-label">🥩 Carnivores</div>
+                <div class="range">
+                    <div style="width : <?= $carnivore.'%' ?>" class="valueCar"></div>
+                </div>
             </div>
             <div class="stat-card">
                 <div class="stat-number"><?= count($dataCtrHerb) ?></div>
                 <div class="stat-label">🌿 Herbivores</div>
+                <div class="range">
+                    <div style="width : <?= $herbivore.'%' ?>" class="valueHerb"></div>
+                </div>
             </div>
         </div>
 
