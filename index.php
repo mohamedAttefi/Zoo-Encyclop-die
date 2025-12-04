@@ -34,10 +34,15 @@ $sqltotal = "SELECT * FROM animals;";
 $resulttotal = mysqli_query($conn, $sqltotal);
 $total = mysqli_fetch_all($resulttotal, MYSQLI_ASSOC);
 
-$herbivore = (count($dataCtrHerb) / count($total)) * 100;
-echo $herbivore;
-$carnivore = (count($dataCtrCar) / count($total)) * 100;
-$omnivore = (count($dataCtrOm) / count($total)) * 100;
+if (count($total) != 0) {
+    $herbivore = (count($dataCtrHerb) / count($total)) * 100;
+    $carnivore = (count($dataCtrCar) / count($total)) * 100;
+    $omnivore = (count($dataCtrOm) / count($total)) * 100;
+}else{
+    $herbivore = 0;
+    $carnivore = 0;
+    $omnivore = 0;
+}
 
 ?>
 <!DOCTYPE html>
@@ -48,21 +53,24 @@ $omnivore = (count($dataCtrOm) / count($total)) * 100;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zoo Animals - Apprendre en S'amusant</title>
     <style>
-        .valueHerb{
+        .valueHerb {
             background-color: green;
             height: 100%;
             border-radius: 30px;
         }
-        .valueOmn{
+
+        .valueOmn {
             background-color: yellow;
             height: 100%;
             border-radius: 30px;
         }
-        .valueCar{
+
+        .valueCar {
             background-color: red;
             height: 100%;
             border-radius: 30px;
         }
+
         .range {
             height: 5px;
             background-color: rgba(173, 173, 173, 1);
@@ -865,26 +873,26 @@ $omnivore = (count($dataCtrOm) / count($total)) * 100;
             </div>
 
 
-            
+
             <div class="stat-card">
                 <div class="stat-number"><?= count($dataCtrOm) ?></div>
                 <div class="stat-label">🍽️ Omnivore</div>
                 <div class="range">
-                    <div style="width : <?= $omnivore.'%' ?>" class="valueOmn"></div>
+                    <div style="width : <?= $omnivore . '%' ?>" class="valueOmn"></div>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-number"><?= count($dataCtrCar) ?></div>
                 <div class="stat-label">🥩 Carnivores</div>
                 <div class="range">
-                    <div style="width : <?= $carnivore.'%' ?>" class="valueCar"></div>
+                    <div style="width : <?= $carnivore . '%' ?>" class="valueCar"></div>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-number"><?= count($dataCtrHerb) ?></div>
                 <div class="stat-label">🌿 Herbivores</div>
                 <div class="range">
-                    <div style="width : <?= $herbivore.'%' ?>" class="valueHerb"></div>
+                    <div style="width : <?= $herbivore . '%' ?>" class="valueHerb"></div>
                 </div>
             </div>
         </div>
