@@ -1,7 +1,8 @@
 <?php 
     include 'connection.php';
-
+    echo 'xi';
     $id = $_POST["delete"];
+    echo $id;
     $sqlDelete = "delete from animals where animal_id = $id;";
     $resultDelete = mysqli_query($conn, $sqlDelete);
     if($resultDelete){

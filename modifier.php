@@ -1,6 +1,11 @@
 <?php
 echo $_POST["modifier"];
 include 'connection.php';
+
+   echo "Server Name: " . $_SERVER['SERVER_NAME'];  // Output: localhost
+   echo "Request Method: " . $_SERVER['REQUEST_METHOD'];  // Output: GET
+
+
 $new_animal_name = $_POST["animal_name"];
 $new_image = $_POST["image"];
 $new_habitat = $_POST["habitat"];
@@ -27,8 +32,8 @@ if (!empty($new_type)) {
 
 if ($result) {
     echo 'success';
-    header("location: index.php");
-    exit;
+    // header("location: index.php");
+    // exit;
 } else {
     echo mysqli_error($conn);
 }

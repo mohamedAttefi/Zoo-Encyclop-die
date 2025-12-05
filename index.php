@@ -13,7 +13,7 @@ if (!empty($_POST["filterType"])) {
     $sqlAffichage .= " AND type_alimentaire = '$type'";
 }
 
-if(isset($_POST["search-btn"]) && !empty($_POST["search"])){
+if (isset($_POST["search-btn"]) && !empty($_POST["search"])) {
     $name_search = strtolower($_POST["search"]);
     $sqlAffichage .= " AND nom = '$name_search'";
 }
@@ -25,10 +25,10 @@ $sqlCtrOm = "SELECT * FROM animals where type_alimentaire = '🍽️ Omnivore';"
 $resultCtrOm = mysqli_query($conn, $sqlCtrOm);
 $dataCtrOm = mysqli_fetch_all($resultCtrOm, MYSQLI_ASSOC);
 
+
 $sqlCtrCar = "SELECT * FROM animals where type_alimentaire = '🥩 Carnivore';";
 $resultCtrCar = mysqli_query($conn, $sqlCtrCar);
 $dataCtrCar = mysqli_fetch_all($resultCtrCar, MYSQLI_ASSOC);
-
 
 
 $sqlCtrHerb = "SELECT * FROM  animals where type_alimentaire = '🌿 Herbivore'";
@@ -37,7 +37,7 @@ $dataCtrHerb = mysqli_fetch_all($resultCtrHerb, MYSQLI_ASSOC);
 
 $sqltotal = "SELECT * FROM animals;";
 $resulttotal = mysqli_query($conn, $sqltotal);
-$total = mysqli_fetch_all($resulttotal, MYSQLI_ASSOC);
+$total = mysqli_fetch_all($resulttotal, MYSQLI_BOTH);
 
 if (count($total) != 0) {
     $herbivore = (count($dataCtrHerb) / count($total)) * 100;
@@ -60,6 +60,20 @@ if (count($total) != 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zoo Animals - Apprendre en S'amusant</title>
     <style>
+        .no-animals {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #4a5568;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin: 40px;
+            position: relative;
+            left: 108%;
+        }
+
         .valueHerb {
             background-color: green;
             height: 100%;
@@ -910,8 +924,14 @@ if (count($total) != 0) {
         <div class='animals-grid'>
             <?php
             // print_r($data);
-            foreach ($dataAffichage as $value) {
-                echo "<div class='animal-card'>
+            if (empty($dataAffichage)) {
+
+                echo '<div class="no-animals">
+                        🚫 Aucun animal trouvé pour cette recherche.
+                    </div>';
+            } else {
+                foreach ($dataAffichage as $value) {
+                    echo "<div class='animal-card'>
             <div class='animal-image'>
                 <img class='animal-image' src='" . $value["image"] . "' alt='" . $value["nom"] . "'>
             </div>
@@ -920,11 +940,12 @@ if (count($total) != 0) {
                 <div class='animal-detail'><strong>Habitat:</strong> <span class='habitat-tag habitat-savane'>" . $value["nom_habitat"] . "</span></div>
                 <div class='animal-detail'><strong>Type:</strong> " . $value["type_alimentaire"] . "</div>
                 <div class='animal-actions'>
-                    <button class='btn-small btn-edit'>✏️ Modifier</button>
-                    <form action='delete.php' method='get'><button type='submit' name='delete' class='btn-small btn-delete' value='{$value['animal_id']}'>Supprimer</button></form>
+                    <button class='btn-small btn-edit' onclick='modifier({$value['animal_id']}, {$value['nom']}), {$value['animal_id']}, {$value['type_alimentaire']}, {$value['image']}, {$value['habitat_id']}'>✏️ Modifier</button>
+                    <form action='delete.php' method='post'><button type='submit' name='delete' class='btn-small btn-delete' value='{$value['animal_id']}'>Supprimer</button></form>
                 </div>
             </div>
         </div>";
+                }
             }
             ?>
 
@@ -950,14 +971,16 @@ if (count($total) != 0) {
             document.body.style.overflow = 'scroll';
         }
 
-        function modifier(id) {
-            let input = modalmod.querySelector('input')
+        function modifier(id, nom, type, image, habitat, description) {
 
-            input.value = id
-            console.log(input);
-            modalmod.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            modalmod.querySelector("input[name='id']").value = id;
+            modalmod.querySelector("input[name='animal_name']").value = nom;
+            modalmod.querySelector("input[name='image']").value = image;
+            modalmod.querySelector("select[name='type']").value = type;
+            modalmod.querySelector("select[name='habitat']").value = habitat;
+            modalmod.querySelector("textarea[name='description']").value = description;
 
+            modalmod.classList.add("active");
         }
     </script>
 </body>
