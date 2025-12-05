@@ -32,8 +32,8 @@ if (!empty($new_type)) {
 
 if ($result) {
     echo 'success';
-    // header("location: index.php");
-    // exit;
+    header("location: index.php");
+    exit;
 } else {
     echo mysqli_error($conn);
 }
