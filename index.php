@@ -517,6 +517,110 @@ if (count($total) != 0) {
             align-items: center;
         }
 
+        .btn,
+        .btn-small {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after,
+        .btn-small::after {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            transform: scale(0);
+            opacity: 0;
+            transition: transform 0.5s, opacity 0.8s;
+        }
+
+        .btn:active::after,
+        .btn-small:active::after {
+            transform: scale(20);
+            opacity: 1;
+            left: var(--x);
+            top: var(--y);
+        }
+
+        .modal-content {
+            transform: scale(0.8);
+            opacity: 0;
+            animation: zoomIn 0.35s ease forwards;
+        }
+
+        @keyframes zoomIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal.active {
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .stat-card {
+            opacity: 0;
+            animation: fadeInStats 0.7s ease forwards;
+        }
+
+        @keyframes fadeInStats {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        .animal-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: 0.3s ease;
+        }
+
+        .animal-card {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animal-card {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+
+
         .modal-title {
             font-size: 1.8em;
             color: #2d3748;
