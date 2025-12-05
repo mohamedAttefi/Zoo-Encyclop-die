@@ -3,6 +3,7 @@ include "connection.php";
 $sqlAffichage = "SELECT * FROM animals, habitat where animals.habitat_id = habitat.id";
 
 if (!empty($_POST["filterHabitat"])) {
+    echo $_POST["filterHabitat"];
     $habitat = $_POST["filterHabitat"];
     $sqlAffichage .= " AND habitat_id = $habitat";
 }
@@ -10,23 +11,27 @@ if (!empty($_POST["filterHabitat"])) {
 if (!empty($_POST["filterType"])) {
     $type = $_POST["filterType"];
     $sqlAffichage .= " AND type_alimentaire = '$type'";
-    echo $sqlAffichage;
+}
+
+if(isset($_POST["search-btn"]) && !empty($_POST["search"])){
+    $name_search = strtolower($_POST["search"]);
+    $sqlAffichage .= " AND nom = '$name_search'";
 }
 
 $resultAffichage = mysqli_query($conn, $sqlAffichage);
 $dataAffichage = mysqli_fetch_all($resultAffichage, MYSQLI_ASSOC);
 
-$sqlCtrOm = "SELECT * FROM animals where type_alimentaire = 'Omnivore';";
+$sqlCtrOm = "SELECT * FROM animals where type_alimentaire = '🍽️ Omnivore';";
 $resultCtrOm = mysqli_query($conn, $sqlCtrOm);
 $dataCtrOm = mysqli_fetch_all($resultCtrOm, MYSQLI_ASSOC);
 
-$sqlCtrCar = "SELECT * FROM animals where type_alimentaire = 'Carnivore';";
+$sqlCtrCar = "SELECT * FROM animals where type_alimentaire = '🥩 Carnivore';";
 $resultCtrCar = mysqli_query($conn, $sqlCtrCar);
 $dataCtrCar = mysqli_fetch_all($resultCtrCar, MYSQLI_ASSOC);
 
 
 
-$sqlCtrHerb = "SELECT * FROM  animals where type_alimentaire = 'Herbivore'";
+$sqlCtrHerb = "SELECT * FROM  animals where type_alimentaire = '🌿 Herbivore'";
 $resultCtrHerb = mysqli_query($conn, $sqlCtrHerb);
 $dataCtrHerb = mysqli_fetch_all($resultCtrHerb, MYSQLI_ASSOC);
 
@@ -38,11 +43,13 @@ if (count($total) != 0) {
     $herbivore = (count($dataCtrHerb) / count($total)) * 100;
     $carnivore = (count($dataCtrCar) / count($total)) * 100;
     $omnivore = (count($dataCtrOm) / count($total)) * 100;
-}else{
+} else {
     $herbivore = 0;
     $carnivore = 0;
     $omnivore = 0;
 }
+
+
 
 ?>
 <!DOCTYPE html>
@@ -740,9 +747,9 @@ if (count($total) != 0) {
                         </label>
                         <select class="form-select input" name="type" required>
                             <option value="">Sélectionner un type</option>
-                            <option value="carnivore">🥩 Carnivore</option>
-                            <option value="herbivore">🌿 Herbivore</option>
-                            <option value="omnivore">🍽️ Omnivore</option>
+                            <option value="🥩 Carnivore">🥩 Carnivore</option>
+                            <option value="🌿 Herbivore">🌿 Herbivore</option>
+                            <option value="🍽️ Omnivore">🍽️ Omnivore</option>
                         </select>
                     </div>
 
@@ -809,9 +816,9 @@ if (count($total) != 0) {
                         </label>
                         <select class="form-select input" name="type">
                             <option value="">Sélectionner un type</option>
-                            <option value="carnivore">🥩 Carnivore</option>
-                            <option value="herbivore">🌿 Herbivore</option>
-                            <option value="omnivore">🍽️ Omnivore</option>
+                            <option value="🥩 Carnivore">🥩 Carnivore</option>
+                            <option value="🌿 Herbivore">🌿 Herbivore</option>
+                            <option value="🍽️ Omnivore">🍽️ Omnivore</option>
                         </select>
                     </div>
 
@@ -853,14 +860,16 @@ if (count($total) != 0) {
                     </select>
                     <select name="filterType">
                         <option value="">Tous les types</option>
-                        <option value="Carnivore">Carnivore</option>
-                        <option value="Herbivore">Herbivore</option>
-                        <option value="Omnivore">Omnivore</option>
+                        <option value="🥩 Carnivore">Carnivore</option>
+                        <option value="🌿 Herbivore">Herbivore</option>
+                        <option value="🍽️ Omnivore">Omnivore</option>
                     </select>
                     <button class="btn" name="filter">Filtrer</button>
                 </form>
-                <input type="text" placeholder="Rechercher un animal...">
-                <button class="btn">Rechercher</button>
+                <form action="index.php" method="post">
+                    <input type="text" name="search" placeholder="Rechercher un animal...">
+                    <button name="search-btn" class="btn">Rechercher</button>
+                </form>
                 <button class="btn btn-add" onclick="openModal(modal)">➕ Ajouter un animal</button>
             </div>
         </div>
@@ -905,15 +914,14 @@ if (count($total) != 0) {
                 echo "<div class='animal-card'>
             <div class='animal-image'>
                 <img class='animal-image' src='" . $value["image"] . "' alt='" . $value["nom"] . "'>
-                <span class='animal-badge'></span>
             </div>
             <div class='animal-info'>
                 <div class='animal-name'>" . $value["nom"] . "</div>
                 <div class='animal-detail'><strong>Habitat:</strong> <span class='habitat-tag habitat-savane'>" . $value["nom_habitat"] . "</span></div>
                 <div class='animal-detail'><strong>Type:</strong> " . $value["type_alimentaire"] . "</div>
                 <div class='animal-actions'>
-                    <button class='btn-small btn-edit' onclick='modifier({$value['animal_id']})'>✏️ Modifier</button>
-                    <form action='delete.php' method='post'><button name='delete' class='btn-small btn-delete' value='{$value['animal_id']}'>🗑️ Supprimer</button></form>
+                    <button class='btn-small btn-edit'>✏️ Modifier</button>
+                    <form action='delete.php' method='get'><button type='submit' name='delete' class='btn-small btn-delete' value='{$value['animal_id']}'>Supprimer</button></form>
                 </div>
             </div>
         </div>";
@@ -922,20 +930,6 @@ if (count($total) != 0) {
 
 
         </div>
-
-
-
-
-        <!-- <div class="game-section">
-            <h2 class="game-title">🎮 Jeu: Devine l'Animal!</h2>
-            <p style="color: #666; margin-bottom: 20px;">Clique sur les cartes pour entendre le cri de l'animal</p>
-            <div>
-                <div class="game-card">🦁</div>
-                <div class="game-card">🐘</div>
-                <div class="game-card">🦍</div>
-            </div>
-            <button class="btn" style="margin-top: 20px; font-size: 1.2em;">🎯 Commencer le Jeu</button>
-        </div> -->
     </div>
 
     <script>
